@@ -1,6 +1,6 @@
 import { Suspense, useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { VESSELS, type Vessel } from '../data/vessels';
@@ -44,9 +44,13 @@ export default function Scene({ currentVessel, onSelect }: SceneProps) {
     <Canvas camera={{ position: [0, 2, 16], fov: 45 }} dpr={[1, 2]}>
       <color attach="background" args={['#0a0f18']} />
       <fog attach="fog" args={['#0a0f18', 14, 28]} />
-      <ambientLight intensity={0.55} />
-      <directionalLight position={[5, 8, 6]} intensity={1.1} />
-      <directionalLight position={[-6, -2, -4]} intensity={0.35} />
+      <ambientLight intensity={0.4} />
+      {/* Key light: warm, upper-front */}
+      <directionalLight position={[5, 9, 7]} intensity={1.15} color="#fff4e6" />
+      {/* Fill light: cool, opposite side, softer */}
+      <directionalLight position={[-6, 2, 4]} intensity={0.4} color="#cfe3ff" />
+      {/* Rim/back light: accents the silhouette edge from behind */}
+      <directionalLight position={[-2, 4, -9]} intensity={0.6} color="#8fd8ff" />
       <Suspense fallback={null}>
         <BodyModel />
         {VESSELS.map((v) => (
@@ -58,6 +62,7 @@ export default function Scene({ currentVessel, onSelect }: SceneProps) {
             onSelect={onSelect}
           />
         ))}
+        <ContactShadows position={[0, -9.95, 0]} opacity={0.45} scale={9} blur={2.4} far={3} color="#000000" frames={1} />
       </Suspense>
       <CameraRig target={currentVessel} />
     </Canvas>
