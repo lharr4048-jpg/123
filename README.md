@@ -22,6 +22,19 @@ npm install
 npm run dev
 ```
 
+## Standalone single-file build (no server needed)
+
+`ir-vascular-anatomy.html` at the repo root is a fully self-contained build —
+all JavaScript and the 3D body mesh are inlined, so you can just download it
+and double-click to open it in Chrome (or any modern browser); it runs from
+`file://` with no server and no internet connection.
+
+To regenerate it after changes:
+
+```bash
+npm run build:single   # writes ir-vascular-anatomy.html
+```
+
 ## Stack
 
 React + TypeScript + Vite, [Three.js](https://threejs.org/) via [`@react-three/fiber`](https://docs.pmnd.rs/react-three-fiber) and [`@react-three/drei`](https://github.com/pmndrs/drei).

@@ -1,8 +1,12 @@
 import { useMemo, useRef } from 'react';
-import { useFrame, useLoader } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+// The mesh is imported as raw text and parsed in-process (rather than fetched
+// at runtime) so the app has no external asset dependency — this lets it be
+// bundled into a single self-contained HTML file that runs from file://.
+import objText from '../assets/FinalBaseMesh.obj?raw';
 
 const SKIN_COLOR = new THREE.Color('#e8c9ae');
 const RIM_COLOR = new THREE.Color('#bfe4ff');
@@ -35,8 +39,11 @@ function buildMergedGeometry(source: THREE.Group): THREE.BufferGeometry {
 }
 
 export default function BodyModel() {
-  const obj = useLoader(OBJLoader, '/models/FinalBaseMesh.obj');
-  const geometry = useMemo(() => buildMergedGeometry(obj), [obj]);
+  const geometry = useMemo(() => {
+    const obj = new OBJLoader().parse(objText);
+    obj.updateMatrixWorld(true);
+    return buildMergedGeometry(obj);
+  }, []);
   const materialRef = useRef<THREE.MeshStandardMaterial>(null);
 
   const material = useMemo(() => {
