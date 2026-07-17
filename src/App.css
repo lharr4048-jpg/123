@@ -181,6 +181,11 @@
   color: var(--vein);
 }
 
+.panel-badge[data-kind='clinical'] {
+  color: #e8b93e;
+  border-color: rgba(232, 185, 62, 0.4);
+}
+
 .vessel-name {
   font-size: 22px;
   margin: 0;

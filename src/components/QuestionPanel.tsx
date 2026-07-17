@@ -17,6 +17,7 @@ const KIND_LABEL: Record<string, string> = {
   proximal: 'Proximal connection',
   distal: 'Distal connection',
   supplies: 'Territory',
+  clinical: 'Clinical / IR relevance',
 };
 
 export default function QuestionPanel({ mode, vessel, question, selectedIndex, answered, onAnswer, onNext }: QuestionPanelProps) {

@@ -1,6 +1,7 @@
 import type { Vessel } from './vessels';
+import { curatedQuestionsFor, toQuestion } from './curatedQuestions';
 
-export type QuestionKind = 'identify' | 'proximal' | 'distal' | 'supplies';
+export type QuestionKind = 'identify' | 'proximal' | 'distal' | 'supplies' | 'clinical';
 
 export interface Question {
   kind: QuestionKind;
@@ -48,6 +49,10 @@ function availableKinds(vessel: Vessel): QuestionKind[] {
   const kinds: QuestionKind[] = ['identify', 'supplies'];
   if (vessel.parentId) kinds.push('proximal');
   if (vessel.childrenIds.length > 0) kinds.push('distal');
+  // Curated second/third-order questions (collateral pathways, named
+  // syndromes, procedural pitfalls) are only available for vessels with
+  // hand-authored content — every vessel still always has 'identify'.
+  if (curatedQuestionsFor(vessel.id).length > 0) kinds.push('clinical');
   return kinds;
 }
 
@@ -57,6 +62,10 @@ export function generateQuestion(vessel: Vessel, allVessels: Vessel[], byId: Map
   const isVein = vessel.type === 'vein';
 
   switch (kind) {
+    case 'clinical': {
+      const curated = curatedQuestionsFor(vessel.id);
+      return toQuestion(curated[Math.floor(Math.random() * curated.length)]);
+    }
     case 'identify': {
       const { options, correctIndex } = buildOptions(vessel.name, regionalNamePool(vessel, allVessels));
       return {
